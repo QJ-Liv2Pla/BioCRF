@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>DNAseq</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="dnaseq">DNAseq</h1>
+<h1 id="step-1-map-reads-to-reference">Step 1 Map reads to reference</h1>
+<h2 id="config-setup">Config setup</h2>
+<pre><code class="language-shell">export SENTIEON_LICENSE=/data2/Fulgent_Genetics_cluster_usb361.lic
+cd /data2/sentieon-genomics-202112.04/bin
+</code></pre>
+<h2 id="sentieon-bwa">sentieon bwa</h2>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span>
+export SENTIEON_LICENSE=/data2/Fulgent_Genetics_cluster_usb361.lic
+
+set -e  # exit script when encouter failure
+set -x  # print command
+
+fasta=/data1/Data/Reference/GRCh38/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
+readgroup=&quot;WGS20220823&quot;
+platform=&quot;ILLUMINA&quot;
+nthreads=10
+bam_option=&quot;--bam_compression 1&quot;
+output_dir=/data1/20240820_NGS_result/WGS_analysis/ 
+
+export fasta readgroup platform nthreads bam_option output_dir
+
+run_bam() {
+  sample_name=$1
+  fastq_1=$2
+  fastq_2=$3
+  output_bam=$4
+  echo &quot;Starting processing for $sample_name, read fastq from $fastq_1 and $fastq_2 &quot;
+  (./sentieon bwa mem -M -R &quot;@RG\tID:$readgroup\tSM:$sample_name\tPL:$platform&quot; -t $nthreads -K 10000000 $fasta $fastq_1 $fastq_2 || echo -n &#x27;error&#x27;) | ./sentieon util sort $bam_option -r $fasta -o $output_bam -t $nthreads --sam2bam -i -
+  echo &quot;Finished processing for $sample_name, output bam file $output_bam&quot;
+}
+
+export -f run_bam
+
+for dir in /admin_file/BioCRF/Genomics_Core/Element_AVITI/202408_NGS_raw/WGS/WGS_merge/*/; do
+  sample_name=$(basename $dir)
+  fastq_1=&quot;${dir}/${sample_name}_R1.fastq.gz&quot;
+  fastq_2=&quot;${dir}/${sample_name}_R2.fastq.gz&quot;
+  output_bam=&quot;${output_dir}${sample_name}_sorted.bam&quot;
+  echo &quot;$sample_name&quot; &gt;&gt; sample-name
+  echo &quot;$fastq_1&quot; &gt;&gt; fastq1-file
+  echo &quot;$fastq_2&quot; &gt;&gt; fastq2-file
+  echo &quot;$output_bam&quot; &gt;&gt; output-bam
+done
+
+parallel --link run_bam :::: sample-name :::: fastq1-file :::: fastq2-file :::: output-bam
+</code></pre>
+<h4 id="output-bam--bambai">output: .bam &amp; .bam.bai</h4>
+<h1 id="step-2-calculate-data-metrics">Step 2 Calculate data metrics</h1>
+<h2 id="calculate-data-metrics">Calculate data metrics</h2>
+<pre><code class="language-shell">for bam in /data1/20240820_NGS_result/WGS_analysis/*.bam; do
+  sample_name=$(basename &quot;$bam&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$bam&quot;)
+  GC_SUMMARY_TXT=&quot;${dir_name}/${sample_name}_gc_summary.txt&quot;
+  GC_METRIC_TXT=&quot;${dir_name}/${sample_name}_gc_metric.txt&quot;
+  MQ_METRIC_TXT=&quot;${dir_name}/${sample_name}_mq_metric.txt&quot;
+  QD_METRIC_TXT=&quot;${dir_name}/${sample_name}_qd_metric.txt&quot;
+  IS_METRIC_TXT=&quot;${dir_name}/${sample_name}_is_metric.txt&quot;
+  ALN_METRIC_TXT=&quot;${dir_name}/${sample_name}_aln_metric.txt&quot;
+<span class="hljs-meta prompt_"># </span><span class="language-bash">generate 5 statistical summaries of the data quality and the pipeline data analysis quality results</span>
+  ./sentieon driver -t 32 -r $fasta -i $bam \
+    --algo GCBias --summary &quot;$GC_SUMMARY_TXT&quot; &quot;$GC_METRIC_TXT&quot; \
+    --algo MeanQualityByCycle &quot;$MQ_METRIC_TXT&quot; \
+    --algo QualDistribution &quot;$QD_METRIC_TXT&quot; \
+    --algo InsertSizeMetricAlgo &quot;$IS_METRIC_TXT&quot; \
+    --algo AlignmentStat &quot;$ALN_METRIC_TXT&quot;
+<span class="hljs-meta prompt_"># </span><span class="language-bash">generate the plots from the statistical summaries</span>
+  GC_METRIC_PDF=&quot;${dir_name}/${sample_name}_gc_metric.pdf&quot;
+  MQ_METRIC_PDF=&quot;${dir_name}/${sample_name}_mq_metric.pdf&quot;
+  QD_METRIC_PDF=&quot;${dir_name}/${sample_name}_qd_metric.pdf&quot;
+  IS_METRIC_PDF=&quot;${dir_name}/${sample_name}_is_metric.pdf&quot;
+  ./sentieon plot GCBias -o &quot;$GC_METRIC_PDF&quot; &quot;$GC_METRIC_TXT&quot;
+  ./sentieon plot MeanQualityByCycle -o &quot;$MQ_METRIC_PDF&quot; &quot;$MQ_METRIC_TXT&quot;
+  ./sentieon plot QualDistribution -o &quot;$QD_METRIC_PDF&quot; &quot;$QD_METRIC_TXT&quot;
+  ./sentieon plot InsertSizeMetricAlgo -o &quot;$IS_METRIC_PDF&quot; &quot;$IS_METRIC_TXT&quot;
+done
+</code></pre>
+<h4 id="output-gc_summary_txt-gc_metric_txt-mq_metric_txt-qd_metric_txt-is_metric_txt-aln_metric_txt-etc">output: GC_SUMMARY_TXT, GC_METRIC_TXT, MQ_METRIC_TXT, QD_METRIC_TXT, IS_METRIC_TXT, ALN_METRIC_TXT, etc.</h4>
+<h1 id="step-3-remove-or-mark-duplicates">Step 3 Remove or mark duplicates</h1>
+<h2 id="remove-or-mark-duplicates">remove or mark duplicates</h2>
+<pre><code class="language-shell">for SORTED_BAM in /data1/20240820_NGS_result/WGS_analysis/*.bam;do
+  sample_name=$(basename &quot;$SORTED_BAM&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$SORTED_BAM&quot;)
+  ./sentieon driver -t 32 -i &quot;$SORTED_BAM&quot; --algo LocusCollector --fun score_info ${dir_name}/${sample_name}_SCORE.gz
+  ./sentieon driver -t 32 -i &quot;$SORTED_BAM&quot; --algo Dedup --rmdup --score_info ${dir_name}/${sample_name}_SCORE.gz --metrics ${dir_name}/${sample_name}_DEDUP_METRIC.txt ${dir_name}/${sample_name}_DEDUPED.bam
+done
+</code></pre>
+<h4 id="output-scoregzdedupedbam">output: SCORE.gz;DEDUPED.bam</h4>
+<h2 id="indel-realignment-optional">Indel realignment (optional)</h2>
+<h3 id="识别可能需要重新比对的区域这些区域通常是由于存在插入或缺失变异导致的错配并进行实际的重新比对以改善对齐质量并减少由于indel导致的假阳性变异调用">识别可能需要重新比对的区域，这些区域通常是由于存在插入或缺失变异导致的错配，并进行实际的重新比对，以改善对齐质量并减少由于INDEL导致的假阳性变异调用</h3>
+<pre><code class="language-shell">for DEDUPED_BAM in /data1/20240820_NGS_result/WGS_analysis/*DEDUPED.bam;do
+  sample_name=$(basename &quot;$DEDUPED_BAM&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$DEDUPED_BAM&quot;)
+  ./sentieon driver -t 32 -r $fasta -i $DEDUPED_BAM --algo Realigner ${dir_name}/${sample_name}_realigned.bam
+done
+<span class="hljs-meta prompt_"># </span><span class="language-bash">optional:[-k KNOWN_SITES]; the location of the VCF file used as a <span class="hljs-built_in">set</span> of known sites. Multiple collections of known sites can be added by repeating the -k KNOWN_SITES option.</span>
+</code></pre>
+<h4 id="output-realignedbam">output: realigned.bam</h4>
+<h1 id="step-4-base-quality-score-recalibration-bqsr">Step 4 Base quality score recalibration (BQSR)</h1>
+<h3 id="质量得分通常以phred得分表示bqsr-通过分析已知的变异位点来识别和校正bam文件中每个碱基的质量得分中的系统误差">质量得分（通常以Phred得分表示），BQSR 通过分析已知的变异位点来识别和校正bam文件中每个碱基的质量得分中的系统误差</h3>
+<pre><code class="language-shell">for REALIGNED_BAM in /data1/20240820_NGS_result/WGS_analysis/*realigned.bam;do
+  sample_name=$(basename &quot;$REALIGNED_BAM&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$REALIGNED_BAM&quot;)
+  ./sentieon driver -t 32 -r $fasta -i $REALIGNED_BAM --algo QualCal ${dir_name}/${sample_name}_recal_data.txt
+done
+</code></pre>
+<h4 id="output-reacal_datatxt">output: reacal_data.txt</h4>
+<h1 id="step-5-variant-calling">Step 5 Variant calling</h1>
+<h3 id="use-gatk-haplotyper-to-call-snp-and-indels">use GATK Haplotyper to call SNP and indels</h3>
+<pre><code class="language-shell">
+for REALIGNED_BAM in /data1/20240820_NGS_result/WGS_analysis/*realigned.bam;do
+  sample_name=$(basename &quot;$REALIGNED_BAM&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$REALIGNED_BAM&quot;)
+  RECAL_TABLE=${dir_name}/${sample_name}_recal_data.txt
+  VARIANT_VCF=${dir_name}/${sample_name}_variant.vcf
+  ./sentieon driver -t 32 -r $fasta -i $REALIGNED_BAM -q $RECAL_TABLE  --algo Haplotyper $VARIANT_VCF
+done
+</code></pre>
+<h4 id="1---dbsnp-the-location-of-the-single-nucleotide-polymorphism-database-dbsnp-that-will-be-used-to-label-known-variants-only-one-dbsnp-file">(1) --dbSNP: the location of the Single Nucleotide Polymorphism database (dbSNP) that will be used to label known variants. Only one dbSNP file.</h4>
+<h4 id="2-haplotypecaller-is-much-better-at-calling-indels-than-position-based-callers-like-unifiedgenotyper">(2) HaplotypeCaller is much better at calling indels than position-based callers like UnifiedGenotyper.</h4>
+<h4 id="output-recalltxt-variantvcf">output: recall.txt, variant.vcf</h4>
+<h1 id="dnascope">DNAScope</h1>
+<h1 id="step-1-after-dnaseqgermline-variant-calling-with-a-machine-learning-model">Step 1 (After DNAseq)Germline variant calling with a machine learning model</h1>
+<h3 id="input-bam-file-should-come-from-a-pipeline-where-only-alignment-and-deduplication-have-been-performed-if-pcrfree-samples-are-used-add---pcr_indel_model">Input BAM file should come from a pipeline where only alignment and deduplication have been performed. If PCRFree samples are used, add &quot;--pcr_indel_model&quot;.</h3>
+<pre><code class="language-shell">fasta=/data1/Data/Reference/GRCh38/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
+ML_MODEL=/data2/sentieon-genomics-202112.04/bin/sentieon_model/dnascope.model
+for DEDUPED_BAM in /data1/20240820_NGS_result/WGS_analysis/*DEDUPED.bam;do
+  sample_name=$(basename &quot;$DEDUPED_BAM&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$DEDUPED_BAM&quot;)
+  TMP_VARIANT_VCF=${dir_name}/${sample_name}_tmp_variant.vcf
+  VARIANT_VCF=${dir_name}/${sample_name}_scope_variant.vcf
+  ./sentieon driver -t 32 -r $fasta -i $DEDUPED_BAM --algo DNAscope --model $ML_MODEL $TMP_VARIANT_VCF
+  ./sentieon driver -t 32 -r $fasta --algo DNAModelApply --model $ML_MODEL -v $TMP_VARIANT_VCF $VARIANT_VCF
+done
+</code></pre>
+<h4 id="output-scope_variantvcf">output: scope_variant.vcf</h4>
+<h1 id="step-2-structural-variant-calling">Step 2 Structural variant calling</h1>
+<h3 id="sv-is-used-to-detect-50-nt-variant-such-as-insertion-deletion-inversion-translocation-break-end-bnd-info-is-needed-if-bqsr-is-performed-it-is-possible-to-input-the-recalibration-table">SV is used to detect &gt;50 nt variant such as insertion, deletion, inversion, translocation. Break-end (BND) info is needed. If BQSR is performed, it is possible to input the recalibration table</h3>
+<pre><code class="language-shell">for DEDUPED_BAM in /data1/20240820_NGS_result/WGS_analysis/*DEDUPED.bam;do
+  sample_name=$(basename &quot;$DEDUPED_BAM&quot; .bam | awk -F&#x27;_&#x27; &#x27;{print $1&quot;_&quot;$2}&#x27;)
+  dir_name=$(dirname &quot;$DEDUPED_BAM&quot;)
+  RECAL_TABLE=${dir_name}/${sample_name}_recal_data.txt
+  TMP_VARIANT_VCF=${dir_name}/${sample_name}_SV_tmp_variant.vcf
+  STRUCTURAL_VARIANT_VCF=${dir_name}/${sample_name}_SV_variant.vcf
+  ./sentieon driver -t 32 -r $fasta -i $DEDUPED_BAM -q $RECAL_TABLE --algo DNAscope --var_type bnd $TMP_VARIANT_VCF
+  ./sentieon driver -t 32 -r $fasta --algo SVSolver -v $TMP_VARIANT_VCF $STRUCTURAL_VARIANT_VCF
+done
+</code></pre>
+<h4 id="the-key-difference-between-a-regular-vcf-and-a-gvcf-is-that-the-gvcf-has-records-for-all-sites-whether-there-is-a-variant-call-there-or-not-the-goal-is-to-have-every-site-represented-in-the-file-in-order-to-do-joint-analysis-of-a-cohort-in-subsequent-steps">The key difference between a regular VCF and a GVCF is that the GVCF has records for all sites, whether there is a variant call there or not. The goal is to have every site represented in the file in order to do joint analysis of a cohort in subsequent steps</h4>
+<h4 id="output-recal_datatxt-sv_variantvcf">output: recal_data.txt, SV_variant.vcf</h4>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

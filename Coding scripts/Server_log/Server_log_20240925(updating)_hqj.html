@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&ast;&ast;Date&ast;&ast;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h3 id="date"><strong>Date</strong></h3>
+<blockquote>
+<p>20240924~20240925</p>
+</blockquote>
+<h3 id="environment"><strong>Environment</strong></h3>
+<blockquote>
+<p>server:10.30.62.1</p>
+</blockquote>
+<h3 id="task"><strong>Task</strong></h3>
+<ul>
+<li>AVITI RNA-seq fastq alignment</li>
+<li>RNA-seq downstream analysis pipeline test</li>
+<li>10X pipeline test</li>
+<li>ONT pipeline test</li>
+</ul>
+<h3 id="log"><strong>Log</strong></h3>
+<h4 id="aviti-rna-seq-fastq-alignment">AVITI RNA-seq fastq alignment</h4>
+<p>为测序样本选择正确的参考基因组（GRCm39）进行alignment</p>
+<pre><code class="language-shell">cd /data1/Analysis/AVITI_analysis_20240923
+<span class="hljs-meta prompt_"># </span><span class="language-bash">mouse sample(YF3)</span>
+nextflow run nf-core/rnaseq \
+     -profile docker \
+     --input samplesheet.csv \
+     --outdir output \
+     --gtf /data1/Data/Reference/Mus_musculus.GRCm39.112.gtf.gz \
+     --fasta /data1/Data/Reference/Mus_musculus.GRCm39.dna_sm.primary_assembly.fa.gz \
+     -c nf_custom.config
+<span class="hljs-meta prompt_"># </span><span class="language-bash">human sample(Li)</span>
+nextflow run nf-core/rnaseq \
+     -profile docker \
+     --input samplesheet_Li_human.csv \
+     --outdir output/Li_human \
+     --gtf /data1/Data/Reference/Homo_sapiens.GRCh38.112.gtf.gz \
+     --fasta /data1/Data/Reference/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz \
+     -c nf_custom.config
+</code></pre>
+<h4 id="pipeline-test">Pipeline test</h4>
+<h5 id="dataset-download">Dataset download</h5>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">下载10X的reference</span>
+cd /data1/Data/Reference/Reference_10X
+curl -O &quot;https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2024-A.tar.gz&quot;
+curl -O &quot;https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCm39-2024-A.tar.gz&quot;
+<span class="hljs-meta prompt_"># </span><span class="language-bash">10X multiplex example dataset(use cellranger multi pipeline)</span>
+cd /data1/Data/ExampleData
+curl -O &quot;wget https://cg.10xgenomics.com/samples/cell-exp/6.0.0/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_Multiplex/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_Multiplex_fastqs.tar&quot;
+tar -xf SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_Multiplex_fastqs.tar
+<span class="hljs-meta prompt_"># </span><span class="language-bash">10X singleplex example dataset(use cellranger count pipeline)</span>
+curl -O &quot;https://cf.10xgenomics.com/samples/cell-exp/6.1.0/3p_Citrate_CPT/3p_Citrate_CPT_fastqs.tar&quot;
+tar -xf 3p_Citrate_CPT_fastqs.tar
+</code></pre>
+<h5 id="run-pipeline">Run pipeline</h5>
+<p><code>cellranger multi</code> pipeline inputs:</p>
+<ul>
+<li><code>--id</code> name the output directory</li>
+<li><code>--csv</code> points to the FASTQ files, and contains other parameters</li>
+</ul>
+<pre><code class="language-shell">cd /data1/Data/ExampleData/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K
+mkdir inputs
+cd inputs
+nano SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K.csv
+<span class="hljs-meta prompt_"># </span><span class="language-bash">copy <span class="hljs-built_in">paste</span></span>
+[gene-expression]
+ref,/data1/Data/Reference/Reference_10X/refdata-gex-GRCh38-2024-A
+create-bam,true
+
+[libraries]
+fastq_id,fastqs,lanes,feature_types
+SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_1_gex,/data1/Data/ExampleData/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_1_gex,any,Gene Expression
+SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_1_multiplexing_capture,/data1/Data/ExampleData/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K/SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K_1_multiplexing_capture,any,Multiplexing Capture
+
+[samples]
+sample_id,cmo_ids,description
+Jurkat,CMO301,Jurkat
+Raji,CMO302,Raji
+<span class="hljs-meta prompt_"># </span><span class="language-bash">ctrl+O to save file and ctrl+X <span class="hljs-built_in">exit</span> nano editor.</span>
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Check cellranger multi parameters use:</span>
+cellranger multi-template --parameters
+cellranger multi --help
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Run cellranger multi</span>
+cellranger multi --id=Jurkat_Raji_10K --csv=SC3_v3_NextGem_DI_CellPlex_Jurkat_Raji_10K.csv
+<span class="hljs-meta prompt_"># </span><span class="language-bash">starts at 17:41:21</span>
+</code></pre>
+<p>(测试)SRA数据(GEO)fetch</p>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">(<span class="hljs-built_in">test</span>) Fetch SRA files</span>
+cd /data1/Data/Reference/
+wget --output-document sratoolkit.tar.gz https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+tar -vxzf sratoolkit.tar.gz
+export PATH=$PATH:$PWD/sratoolkit.3.1.1-ubuntu64/bin
+prefetch srafile
+</code></pre>
+<ul>
+<li>Note</li>
+</ul>
+<p><a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/resources/cr-glossary">10X产品相关名词解释</a></p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

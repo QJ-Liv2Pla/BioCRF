@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>10X Singlecell Analysis</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="10x-singlecell-analysis">10X Singlecell Analysis</h1>
+<h2 id="step-1-download-and-install-cellranger-and-seurat">Step 1 Download and install Cellranger and Seurat</h2>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Download and install Cellranger</span>
+cd /opt
+sudo mkdir Cellranger
+curl -o cellranger-8.0.1.tar.gz &quot;https://cf.10xgenomics.com/releases/cell-exp/cellranger-8.0.1.tar.gz?Expires=1725283779&amp;Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&amp;Signature=AM7BT31MtszJgCXdi2VtjcpMTlsdoEV5sLSNFj9he7uztN9k~A-5CTQbNGa9U8i4Y373t8HqtVguCKHwfe8tifFPnn3ZtJXm24VDXIsgriotwA4ypTvD5xUZGtfhax1bQv1wFzhBtoCqsrHkQFjpoJB6FgxVOn1n6UO4zT3E3LRov-OanjF5qoGooaCHXBGE95xGsl4lT7nub8rapAzP5~K0Jp3FcNoiCYsx6YMdUeJy18989zRc~X7fOZYenfwgIBwAcDe0rRkYypQR59asxQqHZudBgOHFuUWZGbHlVyvD7JlCSs99ji9yz86bnRGN7qHcTkaD6gw8NNC0paWizQ__&quot;
+tar -xzvf cellranger-x.y.z.tar.gz
+export PATH=/opt/Cellranger/cellranger-8.0.1:$PATH
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Download human reference genome</span>
+cd /data1/Data/Reference
+curl -O &quot;https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCm39-2024-A.tar.gz&quot;
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Create conda <span class="hljs-built_in">env</span> <span class="hljs-keyword">for</span> Singlecell analysis and install R and Seurat</span>
+source /opt/anaconda/anaconda3/bin/activate
+conda create -n Singlecell
+conda activate Singlecell
+conda install conda-forge::r-base --yes
+R
+</code></pre>
+<pre><code class="language-R"><span class="hljs-comment"># In R</span>
+install.packages<span class="hljs-punctuation">(</span><span class="hljs-string">&#x27;Seurat&#x27;</span><span class="hljs-punctuation">)</span>
+</code></pre>
+<h2 id="step-2-cellranger-analysis">Step 2 Cellranger analysis</h2>
+<h3 id="optional-if-raw-files-are-sra-files-in-sra-format-extracts-data-in-fastq-format">(Optional) If raw files are SRA files in .sra format, extracts data in FASTQ-format</h3>
+<pre><code class="language-shell">SRAdir=$&quot;/Path/to/srafile/dir&quot;
+Outdir=$&quot;/output/dir/&quot;
+fasterq-dump --split-files $SRAdir --include-technical -O $Outdir
+<span class="hljs-meta prompt_"># </span><span class="language-bash">This step generates 3 fastq files: (1)Sample index <span class="hljs-built_in">read</span>，(2)Read1 and (3)read2.</span> 
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Rename them as followed:</span>
+Sample_ID_I1_001.fastq
+Sample_ID_R1_001.fastq
+Sample_ID_R2_001.fastq
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">For cellranger analysis, zip them as followed:</span>
+for file in /home/qijian/scRNAseq/A8_PRJNA634159/fastq/SRR11821876/*.fastq;do pigz $file;done
+</code></pre>
+<h3 id="use-cellranger-to-generate-qc-and-count-matrix-from-fastq">Use cellranger to generate QC and count matrix from FASTQ</h3>
+<pre><code class="language-shell">Project_id=$&quot;Projectid&quot;
+Reference=$&quot;/Path/to/GRCh38/ref/file&quot;
+Outdir=$&quot;/Path/to/outputdir/for/countmatrix&quot;
+for i in /Directory-to-fastq/*; do
+     cellranger count --id=$Project_id \
+          --transcriptome=$Reference \
+          --fastqs=$i \
+          --create-bam=true \
+          --localcores=64 \
+          --localmem=512 \
+          --output-dir=$Outdir;
+done
+</code></pre>
+<h2 id="step-3-single-cell-downstream-analysis">Step 3 Single-cell downstream analysis</h2>
+<pre><code class="language-R">library<span class="hljs-punctuation">(</span>Seurat<span class="hljs-punctuation">)</span>
+library<span class="hljs-punctuation">(</span>tidyverse<span class="hljs-punctuation">)</span>
+library<span class="hljs-punctuation">(</span>ggplot2<span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment"># 1. Read 10X data</span>
+<span class="hljs-comment">## Read in the output of the cellranger pipeline from 10X, returning a unique molecular identified (UMI) count matrix.</span>
+My10Xproject <span class="hljs-operator">&lt;-</span> Read10X<span class="hljs-punctuation">(</span>data.dir <span class="hljs-operator">=</span> <span class="hljs-string">&quot;/Path/To/10X/countmatrix/&quot;</span><span class="hljs-punctuation">)</span>
+Sobj <span class="hljs-operator">&lt;-</span> CreateSeuratObject<span class="hljs-punctuation">(</span>counts <span class="hljs-operator">=</span> My10Xproject<span class="hljs-punctuation">,</span> project <span class="hljs-operator">=</span> <span class="hljs-string">&quot;My10Xproject&quot;</span><span class="hljs-punctuation">,</span> min.cells <span class="hljs-operator">=</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> min.features <span class="hljs-operator">=</span> <span class="hljs-number">200</span><span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment">## Read in metadata which contains cell index and other info.</span>
+metadata <span class="hljs-operator">&lt;-</span> <span class="hljs-string">&quot;/Path/to/metadata.csv&quot;</span>
+MyMetaData <span class="hljs-operator">&lt;-</span> read.csv<span class="hljs-punctuation">(</span>metadata<span class="hljs-punctuation">,</span> sep <span class="hljs-operator">=</span> <span class="hljs-string">&quot;,&quot;</span><span class="hljs-punctuation">,</span> header <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span><span class="hljs-punctuation">,</span> fill <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span><span class="hljs-punctuation">)</span>
+Sobj<span class="hljs-operator">@</span>meta.data <span class="hljs-operator">&lt;-</span> MyMetaData
+
+<span class="hljs-comment"># 2. Pre-processing</span>
+<span class="hljs-comment">## QC visualization</span>
+Sobj<span class="hljs-punctuation">[[</span><span class="hljs-string">&quot;percent.mt&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span> <span class="hljs-operator">&lt;-</span> PercentageFeatureSet<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> pattern <span class="hljs-operator">=</span> <span class="hljs-string">&quot;^MT-&quot;</span><span class="hljs-punctuation">)</span>
+VlnPlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> features <span class="hljs-operator">=</span> <span class="hljs-built_in">c</span><span class="hljs-punctuation">(</span><span class="hljs-string">&quot;nFeature_RNA&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;nCount_RNA&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;percent.mt&quot;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span> ncol <span class="hljs-operator">=</span> <span class="hljs-number">3</span><span class="hljs-punctuation">)</span>
+FeatureScatter<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> feature1 <span class="hljs-operator">=</span> <span class="hljs-string">&quot;nCount_RNA&quot;</span><span class="hljs-punctuation">,</span> feature2 <span class="hljs-operator">=</span> <span class="hljs-string">&quot;percent.mt&quot;</span><span class="hljs-punctuation">)</span>
+FeatureScatter<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> feature1 <span class="hljs-operator">=</span> <span class="hljs-string">&quot;nCount_RNA&quot;</span><span class="hljs-punctuation">,</span> feature2 <span class="hljs-operator">=</span> <span class="hljs-string">&quot;nFeature_RNA&quot;</span><span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Remove low quality cells, </span>
+Sobj <span class="hljs-operator">&lt;-</span> subset<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> subset <span class="hljs-operator">=</span> nFeature_RNA <span class="hljs-operator">&gt;</span> <span class="hljs-number">200</span> <span class="hljs-operator">&amp;</span> nFeature_RNA <span class="hljs-operator">&lt;</span> <span class="hljs-number">2500</span> <span class="hljs-operator">&amp;</span> percent.mt <span class="hljs-operator">&lt;</span> <span class="hljs-number">5</span><span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment"># 3. Data normalization</span>
+<span class="hljs-comment">## Normalize based on the assumption that each cell originally contains the same number of RNA molecules. Otherwise use SCTransform()</span>
+Sobj <span class="hljs-operator">&lt;-</span> NormalizeData<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> normalization.method <span class="hljs-operator">=</span> <span class="hljs-string">&quot;LogNormalize&quot;</span><span class="hljs-punctuation">,</span> scale.factor <span class="hljs-operator">=</span> <span class="hljs-number">10000</span><span class="hljs-punctuation">)</span>
+Sobj <span class="hljs-operator">&lt;-</span> NormalizeData<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Feature selection to reduce data dimensionality</span>
+Sobj <span class="hljs-operator">&lt;-</span> FindVariableFeatures<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> selection.method <span class="hljs-operator">=</span> <span class="hljs-string">&quot;vst&quot;</span><span class="hljs-punctuation">,</span> nfeatures <span class="hljs-operator">=</span> <span class="hljs-number">2000</span><span class="hljs-punctuation">)</span>
+Sobj <span class="hljs-operator">&lt;-</span> ScaleData<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> features <span class="hljs-operator">=</span> VariableFeatures<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment"># 4. Dimension reduction</span>
+Sobj <span class="hljs-operator">&lt;-</span> RunPCA<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> features <span class="hljs-operator">=</span> VariableFeatures<span class="hljs-punctuation">(</span>object <span class="hljs-operator">=</span> Sobj<span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span> npcs <span class="hljs-operator">=</span> <span class="hljs-number">50</span><span class="hljs-punctuation">)</span>
+DimPlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> reduction <span class="hljs-operator">=</span> <span class="hljs-string">&quot;pca&quot;</span><span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Chose number of PCs for downstream analysis based on major standadr deviation change in elbow plot</span>
+ElbowPlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment"># 5. Cells clustering</span>
+<span class="hljs-comment">## Use Louvain algorithm to iteratively group cells together</span>
+Sobj <span class="hljs-operator">&lt;-</span> FindNeighbors<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> dims <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-operator">:</span><span class="hljs-number">10</span><span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Decide the granularity of cell clustering. Higher resolution value leads to more coarse clustering result.</span>
+Sobj <span class="hljs-operator">&lt;-</span> FindClusters<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> resolution <span class="hljs-operator">=</span> <span class="hljs-number">0.5</span><span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Visualization of clustering result based on UMAP algorithm</span>
+Sobj <span class="hljs-operator">&lt;-</span> RunUMAP<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> dims <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-operator">:</span><span class="hljs-number">10</span><span class="hljs-punctuation">)</span>
+DimPlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> reduction <span class="hljs-operator">=</span> <span class="hljs-string">&quot;umap&quot;</span><span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment"># 6. DEG analysis</span>
+<span class="hljs-comment">## Analyze the differential expressed genes in all clusters</span>
+Sobj.markers <span class="hljs-operator">&lt;-</span> FindAllMarkers<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> only.pos <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span><span class="hljs-punctuation">)</span>
+Sobj.markers <span class="hljs-operator">%&gt;%</span>
+    group_by<span class="hljs-punctuation">(</span>cluster<span class="hljs-punctuation">)</span> <span class="hljs-operator">%&gt;%</span>
+    dplyr<span class="hljs-operator">::</span>filter<span class="hljs-punctuation">(</span>avg_log2FC <span class="hljs-operator">&gt;</span> <span class="hljs-number">1</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">%&gt;%</span>
+    slice_head<span class="hljs-punctuation">(</span>n <span class="hljs-operator">=</span> <span class="hljs-number">10</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">%&gt;%</span>
+    ungroup<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">-&gt;</span> top10
+VlnPlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> features <span class="hljs-operator">=</span> top10<span class="hljs-punctuation">)</span>
+FeaturePlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> features <span class="hljs-operator">=</span> Sobj<span class="hljs-punctuation">,</span> features <span class="hljs-operator">=</span> top10<span class="hljs-punctuation">)</span>
+
+<span class="hljs-comment"># 7. Assign cell names to cluster</span>
+new.cluster.ids <span class="hljs-operator">&lt;-</span> <span class="hljs-built_in">c</span><span class="hljs-punctuation">(</span><span class="hljs-string">&quot;T cells&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;B cells&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;NK cells&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;DC&quot;</span><span class="hljs-punctuation">)</span>
+<span class="hljs-built_in">names</span><span class="hljs-punctuation">(</span>new.cluster.ids<span class="hljs-punctuation">)</span> <span class="hljs-operator">&lt;-</span> levels<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">)</span>
+Sobj <span class="hljs-operator">&lt;-</span> RenameIdents<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> new.cluster.ids<span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Plot</span>
+plot <span class="hljs-operator">&lt;-</span> DimPlot<span class="hljs-punctuation">(</span>Sobj<span class="hljs-punctuation">,</span> reduction <span class="hljs-operator">=</span> <span class="hljs-string">&quot;umap&quot;</span><span class="hljs-punctuation">,</span> label <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span><span class="hljs-punctuation">,</span> label.size <span class="hljs-operator">=</span> <span class="hljs-number">4.5</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> 
+     xlab<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;UMAP 1&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> 
+     ylab<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;UMAP 2&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span>
+     theme<span class="hljs-punctuation">(</span>axis.title <span class="hljs-operator">=</span> element_text<span class="hljs-punctuation">(</span>size <span class="hljs-operator">=</span> <span class="hljs-number">18</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span> legend.text <span class="hljs-operator">=</span> element_text<span class="hljs-punctuation">(</span>size <span class="hljs-operator">=</span> <span class="hljs-number">18</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> 
+     guides<span class="hljs-punctuation">(</span>colour <span class="hljs-operator">=</span> guide_legend<span class="hljs-punctuation">(</span>override.aes <span class="hljs-operator">=</span> <span class="hljs-built_in">list</span><span class="hljs-punctuation">(</span>size <span class="hljs-operator">=</span> <span class="hljs-number">10</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>
+<span class="hljs-comment">## Save result</span>
+ggsave<span class="hljs-punctuation">(</span>filename <span class="hljs-operator">=</span> <span class="hljs-string">&quot;../output/images/MyProject_CellClustering.jpg&quot;</span><span class="hljs-punctuation">,</span> height <span class="hljs-operator">=</span> <span class="hljs-number">7</span><span class="hljs-punctuation">,</span> width <span class="hljs-operator">=</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span> plot <span class="hljs-operator">=</span> plot<span class="hljs-punctuation">,</span> quality <span class="hljs-operator">=</span> <span class="hljs-number">50</span><span class="hljs-punctuation">)</span>
+</code></pre>
+<h4 id="last-edited-by-qijian-on-20240920">Last edited by Qijian on 20240920</h4>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

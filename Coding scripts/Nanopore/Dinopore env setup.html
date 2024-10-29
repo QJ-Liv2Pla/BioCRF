@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Task</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="task">Task</h1>
+<blockquote>
+<p>Dinopore for A to I editing identification in ONT sequencing data</p>
+</blockquote>
+<h1 id=""></h1>
+<h1 id="step-1-environment-configuration">Step 1. Environment configuration</h1>
+<h2 id="optionuse-dinopore-docker-file-to-set-up-environment-directly">(Option)Use <a href="https://codeocean.com/capsule/4038948/tree/v1">Dinopore Docker file</a> to set up environment directly</h2>
+<h2 id="otherwise-set-up-the-environment-step-by-step">Otherwise set up the environment step by step</h2>
+<h2 id="1-conda-install">1. Conda install</h2>
+<blockquote>
+<p><code>Annaconda</code> provide a clean and isolate environment for different tasks. Packages/Softwares can be easily installed through <a href="https://anaconda.org/conda-forge"><code>conda-forge</code></a>. This is one of the best practice to avoid environment conflicts.</p>
+</blockquote>
+<p>Follow the instruction on <a href="https://docs.anaconda.com/miniconda/">conda install website</a>, miniconda works fine.</p>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Download</span>
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+<span class="hljs-meta prompt_"># </span><span class="language-bash">Install</span>
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm ~/miniconda3/miniconda.sh
+<span class="hljs-meta prompt_"># </span><span class="language-bash">Activate</span>
+source ~/miniconda3/bin/activate
+</code></pre>
+<h2 id="2-requisite-software">2. REQUISITE SOFTWARE</h2>
+<h3 id="21-list">2.1 List</h3>
+<p>Guppy_basecaller 3.2.4 (Please modify S1.Basecall_map_nanopolish.sh to point to it)</p>
+<p>Third party software included</p>
+<ul>
+<li>Graphmap2		 			0.6.3</li>
+<li>Sam2tsv (part of Jvarkit)	34d8e7f7</li>
+<li>Picard					2.21.6</li>
+</ul>
+<p>conda env</p>
+<ul>
+<li>python		3.8.5</li>
+<li>h5py			2.10.0</li>
+<li>nanopolish	0.11.1</li>
+<li>pillow		8.3.1</li>
+<li>pyyaml		5.4.1</li>
+<li>requests		2.26.0</li>
+<li>samtools		1.9</li>
+<li>scipy			1.7.1</li>
+</ul>
+<p>R Packages (R version 4.1)</p>
+<ul>
+<li>Matrix		1.3.4</li>
+<li>R.utils		2.11.0</li>
+<li>Rcpp			1.0.7</li>
+<li>abind			1.4.5</li>
+<li>caret			6.0.89</li>
+<li>data.table	1.14.2</li>
+<li>doParallel	1.0.16</li>
+<li>ff			4.0.4</li>
+<li>foreach		1.5.1</li>
+<li>keras			&gt;= 2.3.0</li>
+<li>multiROC		1.1.1</li>
+<li>optparse		1.6.6</li>
+<li>pacman		0.5.1</li>
+<li>plyr			1.8.6</li>
+<li>pracma		2.3.3</li>
+<li>scales		1.1.1</li>
+<li>tensorflow	&gt;= 2.3.0</li>
+<li>tidyverse		1.3.1</li>
+<li>usefun		0.4.8</li>
+<li>zoo			1.8.9</li>
+</ul>
+<h3 id="22-installation">2.2 INSTALLATION</h3>
+<blockquote>
+<p>To install them one by one</p>
+</blockquote>
+<h4 id="221-conda-env">2.2.1 Conda env</h4>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Create a new environment</span>
+conda create -n Dinopore python=3.8.5 h5py=2.10.0 nanopolish=0.11.1 pillow=8.3.1 pyyaml=5.4.1 requests=2.26.0 samtools=1.9 scipy=1.7.1 r-base=4.1.5 
+<span class="hljs-meta prompt_"># </span><span class="language-bash">Activate the new <span class="hljs-built_in">env</span></span>
+conda activate Dinopore
+<span class="hljs-meta prompt_"># </span><span class="language-bash">Install following packages through conda-forge</span>
+conda install conda-forge::r-nloptr --yes
+conda install conda-forge::r-caret --yes
+conda install conda-forge::r-data.table --yes
+conda install conda-forge::r-doparallel --yes
+conda install conda-forge::r-tidyverse --yes
+conda install conda-forge::openjdk=17.0.1 --yes
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Enter R</span>
+R
+</code></pre>
+<h4 id="222-r">2.2.2 R</h4>
+<pre><code class="language-R"><span class="hljs-comment"># Use R command</span>
+install.packages<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;tensorflow&quot;</span><span class="hljs-punctuation">)</span>
+library<span class="hljs-punctuation">(</span>tensorflow<span class="hljs-punctuation">)</span>
+install_tensorflow<span class="hljs-punctuation">(</span>envname <span class="hljs-operator">=</span> <span class="hljs-string">&quot;Dinopore&quot;</span><span class="hljs-punctuation">,</span> version <span class="hljs-operator">=</span> <span class="hljs-string">&quot;2.3.0&quot;</span><span class="hljs-punctuation">)</span>
+install.packages<span class="hljs-punctuation">(</span><span class="hljs-built_in">c</span><span class="hljs-punctuation">(</span><span class="hljs-string">&#x27;Matrix&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;R.utils&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;Rcpp&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;abind&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;ff&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;foreach&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;keras&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;multiROC&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;optparse&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;pacman&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;plyr&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;pracma&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;scales&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;usefun&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;zoo&#x27;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>
+quit<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span>
+n
+</code></pre>
+<h4 id="223-software">2.2.3 Software</h4>
+<p><a href="https://github.com/kishwarshafin/lab-notes/blob/master/basecalling_with_guppy.md">Guppy_basecaller installation guide</a> (Please modify S1.Basecall_map_nanopolish.sh to point to it)</p>
+<p><a href="https://github.com/lbcb-sci/graphmap2">Graphmap2 installation guide</a></p>
+<p><a href="https://github.com/broadinstitute/picard">Picard installation guide</a></p>
+<h1 id="step2-run-dinopore">Step2 Run Dinopore</h1>
+<p>To convert pod5 to fast5, create a new conda env to install pod5</p>
+<pre><code class="language-shell">conda create -n pod5 python=3.10
+conda activate pod5
+conda install h5py=3.11.0 --yes
+pip install pod5
+pod5 convert to_fast5 --help
+pod5 convert to_fast5 -r /data3/Nanopore_analysis/Dinopore/input_data/pod5 --output /data3/Nanopore_analysis/Dinopore/input_data/fast5
+ls /data3/Nanopore_analysis/Dinopore/input_data/fast5
+</code></pre>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Open a terminal</span>
+screen -S Dinopore
+</code></pre>
+<h4 id="use-dorado-to-speed-up-alignment-or-use-dinopore-script">Use dorado to speed up alignment Or use Dinopore script</h4>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">! /bin/bash</span>
+<span class="hljs-meta prompt_">
+#</span><span class="language-bash">SBATCH -J dorado_sup</span>
+<span class="hljs-meta prompt_">#</span><span class="language-bash">SBATCH -p gpu1</span>
+<span class="hljs-meta prompt_">#</span><span class="language-bash">SBATCH -N 1</span>
+<span class="hljs-meta prompt_">#</span><span class="language-bash">SBATCH --gres=gpu:3</span>
+<span class="hljs-meta prompt_">#</span><span class="language-bash">SBATCH --cpus-per-gpu=20</span>
+
+/cluster/home/hongyanhong/soft/dorado-0.7.2-linux-x64/bin/dorado basecaller  sup /cluster/home/hongyanhong/projects/CDKN1A_RAB44/enrich_sample_forall_240725/2024-5-18-YHY/2024_5_18_YHY/no_sample/20240518_2127_MN28697_FAZ02462_430ad21e/pod5  --kit-name SQK-PCB111-24 -v \
+<span class="hljs-meta prompt_"> &gt; </span><span class="language-bash">fastq_dorado_sup/calls.bam</span> 
+</code></pre>
+<h4 id="-1"></h4>
+<blockquote>
+<p>Before use, edit every .sh and .R script to modify file/script path. e.g. <code>./code/</code> instead of <code>/code/</code> after you git clone the Dinopore script.</p>
+</blockquote>
+<pre><code class="language-shell">flowcell=FLO-PRO004RA
+kit=SQK-RNA004
+<span class="hljs-meta prompt_"># </span><span class="language-bash">Step 1 - Basecall fast5 -&gt; map to genome reference -&gt; run nanopolish to extract signal</span>
+
+exptdir=/data3/Nanopore_analysis/Dinopore/input_data/
+ref=/data1/Data/Reference/GRCh38/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
+numcore=16
+delfastq=&#x27;y&#x27;
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Step 2 - Process data: convert bam file to tsv and combine nanopolish into single signal <span class="hljs-keyword">for</span> each 5-mer of a <span class="hljs-built_in">read</span></span>
+
+exptdir=
+ref=
+numcore=
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Step 3 - Combine bam-tsv file and combined nanopolish file to generate raw features table</span>
+
+exptdir=
+numcore=
+agggrp=&#x27;PAW01419&#x27;
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Step 4 - Aggregate features of reads into positions</span>
+exptdir=
+numcore=
+agggrp=
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Step 5 - Transform 1D into 2D data + Label data (class 0, 1 and 2 <span class="hljs-keyword">for</span> unmodified, Inosine and SNP AG)</span>
+exptdir=
+numcore=
+agggrp=
+classref=/data/xen_s9_r1_50k/groundtruth_classification.txt # Use proper groundtruth data
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">Step 6</span>
+exptdir=
+numcore=
+agggrp=
+classref=
+</code></pre>
+<h4 id="run-dinopore">Run Dinopore</h4>
+<pre><code class="language-Shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">e.g.</span>
+cd /data3/Nanopore_analysis/Dinopore
+bash mainscript.sh -e /data3/Nanopore_analysis/Dinopore/input_data/ -r /data1/Data/Reference/GRCh38/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa -n 16 -g &#x27;PAW01419&#x27; -c groundtruth_classification.txt
+</code></pre>
+
+            
+            
+        </body>
+        </html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Nextflow RNA-seq analysis</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="nextflow-rna-seq-analysis">Nextflow RNA-seq analysis</h1>
+<h1 id="step-1">Step 1</h1>
+<h3 id="create-a-samplesheet-in-csv-format-which-contain-information-about-sample-name-file-dir-of-fastq-files-and-strandness-of-library">Create a samplesheet in csv format which contain information about sample name, file dir of fastq files and strandness of library.</h3>
+<pre><code class="language-shell">vim /data1/20240820_NGS_result/RNA_seq_analysis/20240826_input/samplesheet.csv
+sample,fastq_1,fastq_2,strandedness
+RNA_32_1,/admin_file/BioCRF/Genomics_Core/Element_AVITI/202408_NGS_raw/RNA/RNA_32_1/RNA_32_1_R1.fastq.gz,/admin_file/BioCRF/Genomics_Core/Element_AVITI/202408_NGS_raw/RNA/RNA_32_1/RNA_32_1_R2.fastq.gz,auto
+RNA_32_2,/admin_file/BioCRF/Genomics_Core/Element_AVITI/202408_NGS_raw/RNA/RNA_32_2/RNA_32_2_R1.fastq.gz,/admin_file/BioCRF/Genomics_Core/Element_AVITI/202408_NGS_raw/RNA/RNA_32_2/RNA_32_2_R2.fastq.gz,auto
+</code></pre>
+<h1 id="step-2">Step 2</h1>
+<h3 id="customize-the-configuration-of-analysis-for-detailed-syntax-visit">Customize the configuration of analysis. For detailed syntax, visit:</h3>
+<p><a href="https://www.nextflow.io/docs/latest/config.html#process-selectors">configuration syntax</a></p>
+<pre><code class="language-shell">vim /data1/20240820_NGS_result/RNA_seq_analysis/20240826_input/custom_20240826.config
+executor {
+     name = &#x27;local&#x27;
+     maxParallel = 20
+}
+process {
+     cpus = 64
+     memory = 500.GB
+}
+</code></pre>
+<h1 id="step-3">Step 3</h1>
+<pre><code class="language-shell">nextflow run nf-core/rnaseq \
+     -profile docker \
+     --input /data1/20240820_NGS_result/RNA_seq_analysis/20240826_input/samplesheet.csv \
+     --outdir /data1/20240820_NGS_result/RNA_seq_analysis/20240826_output \
+     --gtf /data1/Data/Reference/Homo_sapiens.GRCh38.112.gtf.gz \
+     --fasta /data1/Data/Reference/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz \
+     -c /data1/20240820_NGS_result/RNA_seq_analysis/20240826_input/custom_20240826.config
+</code></pre>
+<h2 id="note">Note:</h2>
+<h4 id="1-be-careful-wheather-adapter-were-trimmed-before-nf-workflows">(1) Be careful wheather adapter were trimmed before NF workflows</h4>
+<h4 id="2-do-not-use--c--to-specify-parameters-as-this-will-result-in-errors">(2) Do not use -c <file> to specify parameters as this will result in errors.</h4>
+<h4 id="3-custom-config-files-specified-with--c-must-only-be-used-for-tuning-process-resource-specifications-other-infrastructural-tweaks-such-as-output-directories-or-module-arguments-args">(3) Custom config files specified with -c must only be used for tuning process resource specifications, other infrastructural tweaks (such as output directories), or module arguments (args).</h4>
+<h2 id="pipeline-settings">Pipeline settings</h2>
+<h4 id="1-can-be-provided-in-a-yaml-or-json-file-via--params-file--with-paramsyaml-containing">(1) Can be provided in a yaml or json file via -params-file <file>. With params.yaml containing:</h4>
+<pre><code class="language-shell">input: &lt;SAMPLESHEET&gt;
+outdir: &lt;OUTDIR&gt;
+genome: &#x27;GRCh37&#x27;
+&lt;...&gt;
+</code></pre>
+<h4 id="2-pipeline-will-create-the-following-files-in-working-directory">(2) Pipeline will create the following files in working directory:</h4>
+<pre><code class="language-shell">&lt;work directory&gt; # Directory containing the nextflow working files
+&lt;OUTDIR&gt;  # Finished results in specified location (defined with --outdir)
+.nextflow_log  # Log file from Nextflow
+Other nextflow hidden files # eg. history of pipeline runs and old logs.
+</code></pre>
+<h5 id="last-edited-by-qijian-20240920">Last edited by qijian 20240920</h5>
+
+            
+            
+        </body>
+        </html>

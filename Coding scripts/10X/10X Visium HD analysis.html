@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Space Ranger</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="space-ranger">Space Ranger</h1>
+<h4 id="space-ranger-is-a-suite-of-analysis-tools-designed-for-10x-genomics-visium-data-it-enables-users-to-profile-the-whole-transcriptome-in-formalin-fixed--paraffin-embedded-ffpe-fixed-frozen-fxf-and-fresh-frozen-ff-tissues-space-ranger-is-compatible-with-both-brightfield-and-fluorescence-microscopy-images-pipelines-include">Space Ranger is a suite of analysis tools designed for 10x Genomics Visium data. It enables users to profile the whole transcriptome in formalin-fixed &amp; paraffin-embedded (FFPE), fixed frozen (FxF), and fresh frozen (FF) tissues. Space Ranger is compatible with both brightfield and fluorescence microscopy images. Pipelines include:</h4>
+<h4 id="1-the-spaceranger-mkfastq-demultiplexes-the-illumina-sequencers-base-call-files-bcls-for-each-flow-cell-directory-into-fastq-files">(1) The <strong>spaceranger mkfastq</strong> demultiplexes the Illumina sequencer's base call files (BCLs) for each flow cell directory into FASTQ files;</h4>
+<h4 id="2-the-spaceranger-count-pipeline-inputs-a-reference-a-microscope-slide-image-and-fastq-files-to-generate-feature-barcode-matrices-identify-clusters-and-perform-differential-gene-expression">(2) The <strong>spaceranger count</strong> pipeline inputs a reference, a microscope slide image, and FASTQ files to generate feature-barcode matrices, identify clusters, and perform differential gene expression;</h4>
+<h4 id="3-the-spaceranger-aggr-pipeline-can-be-used-to-aggregate-samples-into-a-single-feature-barcode-matrix">(3) The <strong>spaceranger aggr</strong> pipeline can be used to aggregate samples into a single feature-barcode matrix.</h4>
+<h1 id="step-1-download-and-install-space-ranger">Step 1 Download and install Space Ranger</h1>
+<pre><code class="language-shell">cd /opt
+sudo mkdir Spaceranger
+cd Spaceranger
+curl -o spaceranger-3.1.1.tar.gz &quot;https://cf.10xgenomics.com/releases/spatial-exp/spaceranger-3.1.1.tar.gz?Expires=1726856991&amp;Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&amp;Signature=PMsrdGplIptYKbsXiHmE-6I6rhVxYe2pH4o-2QbWW05guFO-T3SQJ0B7NTlFEdjPATigONyZvaJhuLTUPIZ1R6JVWY05NB8fAEd2DGS4reHsHIKobmR3XsAvIuUBSZtgw91v0242rCFuFKDS7AIwpujBxHPWHEbF11m23d1TWeKuPIcyqs71rA0PT~mRgnK2NyjSdYszW-p-2ajFjZx-1DFMpHzzL-t35uOn-HQHXtBNL35XBN4GJe-sheIzNig5kiQQDRXkJMUk9bf0mud7u8ZG4mAx1RFyjtIhN~gUf16PuSpt2RNm3TXOSwk7kpc5S5Rtaco68R0wn~kyPghCuA__&quot;
+tar -zxvf spaceranger-3.1.0.tar.gz
+export PATH=/opt/Spaceranger/spaceranger-3.1.0:$PATH
+</code></pre>
+<h2 id="optional-step-bcl-to-fastq">(Optional Step) Bcl To FASTQ</h2>
+<h3 id="skip-this-step-if-raw-files-are-fastq">Skip this step if raw files are FASTQ</h3>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">spaceranger mkfastq</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">1. Create a CSV sample sheet</span>
+vim spaceranger-bcl-sample.csv
+Lane,Sample,Index
+1,test_sample,SI-TT-D9
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">2. Run mkfastq</span>
+Bclpath=$&quot;/PATH/TO/tiny-bcl&quot;
+Samplesheet=/PATH/TO/spaceranger-bcl-sample.csv
+spaceranger mkfastq --id=tiny-bcl \
+                    --run=$Bclpath \
+                    --csv=$Samplesheet
+</code></pre>
+<h1 id="step-2-visium-hd-analysis-with-spaceranger-count">Step 2 Visium HD Analysis with spaceranger count</h1>
+<h3 id="following-inputs-are-required">Following inputs are required:</h3>
+<ul>
+<li><strong>CytAssist image</strong> in <code>TIFF</code> format (<code>--cytaimage</code>)</li>
+<li><strong>Microscope image</strong> (optional) in either <code>TIFF</code>, <code>QPTIFF</code>, <code>BTF</code>, or <code>JPEG</code> format:
+<ul>
+<li><code>--image</code> for a brightfield microscope image</li>
+<li><code>--darkimage</code> for a dark background fluorescence microscope image</li>
+<li><code>--colorizedimage</code> for a composite colored fluorescence microscope image</li>
+</ul>
+</li>
+<li><strong>Slide parameters</strong> specified by <code>--slide</code> &amp; <code>--area</code></li>
+<li><strong>Reference transcriptome</strong> (<code>--transcriptome</code>)</li>
+<li><strong>probe set CSV</strong> (<code>--probe-set</code>)</li>
+</ul>
+<pre><code class="language-shell">Reference=/PATH/TO/REF
+Fastqs=/path/to/fastq
+ProbeSet=/path/to/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv
+CytaImage=/path/to/TIF
+Image=/path/to/BTF
+spaceranger count --id=visium_hd_count \
+     --transcriptome=$Reference \
+     --fastqs=$Fastqs \
+     --probe-set=$ProbeSet \
+     --slide=H1-YD7CDZK \
+     --area=A1 \
+     --cytaimage=$CytaImage \
+     --image=$Image \
+     --create-bam=false
+</code></pre>
+<h2 id="step-3-check-output">Step 3 Check output</h2>
+<p><a href="https://www.10xgenomics.com/support/software/space-ranger/latest/analysis/outputs/output-overview">Spaceranger Output Details</a></p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
